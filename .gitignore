@@ -1,0 +1,21 @@
+.venv/
+venv/
+.env
+*.db
+
+# Development environment folders (like PyCharm / VSCode)
+.idea/
+.vscode/
+
+# Temporary and cache files
+__pycache__/
+*.pyc
+*.pyo
+*.log
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Git itself
+.git/
