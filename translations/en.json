@@ -1,0 +1,69 @@
+{
+  "bot": {
+    "greeting": "🤖 Hello! I am a multi-purpose bot.",
+    "current_environment": "📍 Current environment: {chat_type}",
+    "chat_id": "🆔 Chat ID: `{chat_id}`",
+    "available_commands": "📋 Available commands:",
+    "usage_hint": "💡 To use any command, send it as a reply to the target message.",
+    "ready": "🤖 Bot is ready to run...",
+    "stopping": "Stopping the bot...",
+    "stopped": "Bot stopped.",
+    "group_restrictions": "🔐 Group restrictions: {status}",
+    "allowed_groups": "📋 Allowed groups: {groups}"
+  },
+  "permissions": {
+    "not_authorized_user": "⛔ You are not authorized to use this bot.\nThis bot is private and only available to its owner.",
+    "not_authorized_group": "⛔ This group is not authorized to use this bot.\n🆔 Group ID: `{chat_id}`",
+    "not_authorized_command": "⛔ You are not authorized to use this command."
+  },
+  "group_info": {
+    "chat_information": "🆔 Chat information:",
+    "type": "📍 Type: {chat_type}",
+    "id": "🆔 ID: `{chat_id}`",
+    "status": "🔐 Status: {status}",
+    "add_hint": "💡 To add this group to the allowed list, place the above ID in the config.py file."
+  },
+  "status": {
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "allowed": "✅ Allowed",
+    "not_allowed": "❌ Not Allowed",
+    "group": "Group",
+    "private_chat": "Private Chat"
+  },
+  "errors": {
+    "unexpected_error": "Unexpected error: {error}",
+    "received_signal": "Received signal {signal}",
+    "keyboard_interrupt": "Received Ctrl+C",
+    "exiting": "Exiting program"
+  },
+  "del_message": {
+     "handler_name": "Delete Message After Custom Time",
+    "reply_required": "Please send this command in reply to a message.",
+    "scheduled_confirmation": "✅ Message scheduled for deletion in {time_text}.",
+    "time_format": {
+      "days": "{days} day(s)",
+      "days_hours": "{days} day(s) and {hours} hour(s)",
+      "hours": "{hours} hour(s)",
+      "minutes": "{minutes} minute(s)",
+      "seconds": "{seconds} second(s)"
+    },
+    "deletion_success": "Message {message_id} in chat {chat_id} deleted.",
+    "deletion_error": "Error deleting message {message_id}: {error}",
+    "check_error": "Error checking expired messages: {error}",
+    "command_delete_error": "Error deleting command message: {error}",
+    "notification_error": "Error sending/deleting notification: {error}"
+  },
+  "to_jpg": {
+    "handler_name": "Convert to JPG",
+    "reply_required": "Please send this command in reply to a message containing an image file.",
+    "no_image": "The selected message does not contain an image file. Only image files are accepted.",
+    "not_image_document": "The selected file is not an image.",
+    "converting": "🔄 Converting file...",
+    "uploading": "⬆️ Uploading...",
+    "conversion_error": "❌ Error converting file: {error}",
+    "heic_not_supported": "HEIC format is not supported. Please install pillow-heif.",
+    "image_conversion_error": "Error converting image: {error}",
+    "temp_cleanup_error": "Error deleting temporary folder {temp_dir}: {error}"
+  }
+}

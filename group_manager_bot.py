@@ -2,10 +2,11 @@ import asyncio
 import logging
 import signal
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters
-from config import BOT_TOKEN, DELETE_AFTER_HOURS, ADMIN_USER_ID, ALLOWED_GROUPS, RESTRICT_TO_ALLOWED_GROUPS
+from config import BOT_TOKEN, DELETE_AFTER_HOURS, ADMIN_USER_ID, ALLOWED_GROUPS, RESTRICT_TO_ALLOWED_GROUPS, LANGUAGE
 from database.db_manager import init_db
 from handlers.del_message import DelMessageHandler, check_and_delete_expired_messages
 from handlers.to_jpg import ToJpgHandler
+from translations import init_translator, t
 
 # Configure logging
 logging.basicConfig(
@@ -50,16 +51,14 @@ class TelegramBot:
         if chat_id > 0:
             if user_id != ADMIN_USER_ID:
                 await update.message.reply_text(
-                    "⛔ You are not authorized to use this bot.\n"
-                    "This bot is private and only available to its owner."
+                    t("permissions.not_authorized_user")
                 )
                 return False
 
         # In groups, check the allowed groups list
         elif not self._is_group_allowed(chat_id):
             await update.message.reply_text(
-                "⛔ This group is not authorized to use this bot.\n"
-                f"🆔 Group ID: `{chat_id}`"
+                t("permissions.not_authorized_group", chat_id=chat_id)
             )
             logging.warning(f"Unauthorized request from group {chat_id} by user {user_id}")
             return False
@@ -125,15 +124,18 @@ class TelegramBot:
 
         command_list = "\n".join(commands)
 
-        chat_type = "Group" if update.effective_chat.id < 0 else "Private Chat"
+        chat_type = t("status.group") if update.effective_chat.id < 0 else t("status.private_chat")
+        chat_id = update.effective_chat.id
 
-        await update.message.reply_text(
-            f"🤖 Hello! I am a multi-purpose bot.\n\n"
-            f"📍 Current environment: {chat_type}\n"
-            f"🆔 Chat ID: `{update.effective_chat.id}`\n\n"
-            f"📋 Available commands:\n{command_list}\n\n"
-            f"💡 To use any command, send it as a reply to the target message."
+        message = (
+            f"{t('bot.greeting')}\n\n"
+            f"{t('bot.current_environment', chat_type=chat_type)}\n"
+            f"{t('bot.chat_id', chat_id=chat_id)}\n\n"
+            f"{t('bot.available_commands')}\n{command_list}\n\n"
+            f"{t('bot.usage_hint')}"
         )
+
+        await update.message.reply_text(message)
 
     async def _groupid_command(self, update, context):
         """Show group or chat ID"""
@@ -142,28 +144,33 @@ class TelegramBot:
 
         # Only admin can see this command
         if user_id != ADMIN_USER_ID:
-            await update.message.reply_text("⛔ You are not authorized to use this command.")
+            await update.message.reply_text(t("permissions.not_authorized_command"))
             return
 
-        chat_type = "Group" if chat_id < 0 else "Private Chat"
-        is_allowed = "✅ Allowed" if self._is_group_allowed(chat_id) else "❌ Not Allowed"
+        chat_type = t("status.group") if chat_id < 0 else t("status.private_chat")
+        is_allowed = t("status.allowed") if self._is_group_allowed(chat_id) else t("status.not_allowed")
 
-        await update.message.reply_text(
-            f"🆔 Chat information:\n\n"
-            f"📍 Type: {chat_type}\n"
-            f"🆔 ID: `{chat_id}`\n"
-            f"🔐 Status: {is_allowed}\n\n"
-            f"💡 To add this group to the allowed list, place the above ID in the config.py file."
+        message = (
+            f"{t('group_info.chat_information')}\n\n"
+            f"{t('group_info.type', chat_type=chat_type)}\n"
+            f"{t('group_info.id', chat_id=chat_id)}\n"
+            f"{t('group_info.status', status=is_allowed)}\n\n"
+            f"{t('group_info.add_hint')}"
         )
+
+        await update.message.reply_text(message)
 
     async def run(self):
         """Run the bot"""
         await self.setup()
 
-        logging.info("🤖 Bot is ready to run...")
-        logging.info(f"🔐 Group restrictions: {'Enabled' if RESTRICT_TO_ALLOWED_GROUPS else 'Disabled'}")
+        logging.info(t("bot.ready"))
+
+        restriction_status = t("status.enabled") if RESTRICT_TO_ALLOWED_GROUPS else t("status.disabled")
+        logging.info(t("bot.group_restrictions", status=restriction_status))
+
         if RESTRICT_TO_ALLOWED_GROUPS and ALLOWED_GROUPS:
-            logging.info(f"📋 Allowed groups: {ALLOWED_GROUPS}")
+            logging.info(t("bot.allowed_groups", groups=ALLOWED_GROUPS))
 
         # Initialize the app
         await self.app.initialize()
@@ -175,11 +182,11 @@ class TelegramBot:
             await asyncio.sleep(1)
 
         # Clean shutdown
-        logging.info("Stopping the bot...")
+        logging.info(t("bot.stopping"))
         await self.app.updater.stop()
         await self.app.stop()
         await self.app.shutdown()
-        logging.info("Bot stopped.")
+        logging.info(t("bot.stopped"))
 
     def stop(self):
         """Stop the bot"""
@@ -188,11 +195,14 @@ class TelegramBot:
 
 def signal_handler(signum, frame, bot):
     """Handle stop signals"""
-    logging.info(f"Received signal {signum}")
+    logging.info(t("errors.received_signal", signal=signum))
     bot.stop()
 
 
 async def main():
+    # Initialize translator - only once at startup
+    init_translator(LANGUAGE)
+
     bot = TelegramBot()
 
     # Setup signal handlers
@@ -202,11 +212,11 @@ async def main():
     try:
         await bot.run()
     except KeyboardInterrupt:
-        logging.info("Received Ctrl+C")
+        logging.info(t("errors.keyboard_interrupt"))
     except Exception as e:
-        logging.error(f"Unexpected error: {e}")
+        logging.error(t("errors.unexpected_error", error=e))
     finally:
-        logging.info("Exiting program")
+        logging.info(t("errors.exiting"))
 
 
 if __name__ == "__main__":
