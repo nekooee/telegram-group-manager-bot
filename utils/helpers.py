@@ -1,18 +1,5 @@
-import asyncio
-from telegram import Message
-
-
-async def delete_message_after_delay(message: Message, delay_seconds: int = 10):
-    """حذف پیام بعد از مدت زمان مشخص"""
-    await asyncio.sleep(delay_seconds)
-    try:
-        await message.delete()
-    except Exception:
-        pass
-
-
 def format_file_size(size_bytes: int) -> str:
-    """تبدیل سایز فایل به فرمت قابل خواندن"""
+    """Convert file size to readable format"""
     if size_bytes == 0:
         return "0B"
 
@@ -25,7 +12,7 @@ def format_file_size(size_bytes: int) -> str:
 
 
 def is_image_file(filename: str) -> bool:
-    """بررسی اینکه فایل تصویر است یا نه"""
+    """Checking if a file is an image or not"""
     if not filename:
         return False
 

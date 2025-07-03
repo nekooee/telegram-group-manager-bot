@@ -7,11 +7,12 @@ from telegram.ext import ContextTypes
 from .base_handler import BaseHandler
 from config import DELETE_AFTER_HOURS
 from database.db_manager import save_message_for_deletion, get_expired_messages, delete_message_record
+from translations import t
 
 
 class DelMessageHandler(BaseHandler):
     def __init__(self):
-        super().__init__("Delete Message After Custom Time")
+        super().__init__(t("del_message.handler_name"))
 
     def get_command_name(self) -> str:
         return "del"
@@ -59,7 +60,7 @@ class DelMessageHandler(BaseHandler):
         if not update.message.reply_to_message:
             await self.send_error_message(
                 update,
-                "Please send this command in reply to a message."
+                t("del_message.reply_required")
             )
             return False, 0
 
@@ -84,7 +85,7 @@ class DelMessageHandler(BaseHandler):
         try:
             await update.message.delete()
         except Exception as e:
-            logging.error(f"Error deleting command message: {e}")
+            logging.error(t("del_message.command_delete_error", error=e))
 
         # Send confirmation message
         await self._send_confirmation(context, chat_id, message_id, hours)
@@ -94,14 +95,14 @@ class DelMessageHandler(BaseHandler):
         try:
             notification = await context.bot.send_message(
                 chat_id=chat_id,
-                text=f"✅ Message scheduled for deletion in {time_text}.",
+                text=t("del_message.scheduled_confirmation", time_text=time_text),
                 reply_to_message_id=message_id
             )
 
             await asyncio.sleep(10)
             await notification.delete()
         except Exception as e:
-            logging.error(f"Error sending/deleting notification: {e}")
+            logging.error(t("del_message.notification_error", error=e))
 
     def _format_time_text(self, hours: float) -> str:
         """Format time text based on hours value"""
@@ -109,17 +110,18 @@ class DelMessageHandler(BaseHandler):
             days = int(hours // 24)
             remaining_hours = hours % 24
             if remaining_hours > 0:
-                return f"{days} day(s) and {remaining_hours:.1f} hour(s)"
+                return t("del_message.time_format.days_hours",
+                        days=days, hours=f"{remaining_hours:.1f}")
             else:
-                return f"{days} day(s)"
+                return t("del_message.time_format.days", days=days)
         elif hours >= 1:
-            return f"{hours:.1f} hour(s)"
+            return t("del_message.time_format.hours", hours=f"{hours:.1f}")
         elif hours >= 1 / 60:  # more than one minute
             minutes = int(hours * 60)
-            return f"{minutes} minute(s)"
+            return t("del_message.time_format.minutes", minutes=minutes)
         else:
             seconds = int(hours * 3600)
-            return f"{seconds} second(s)"
+            return t("del_message.time_format.seconds", seconds=seconds)
 
 
 # Job function to delete expired messages
@@ -134,12 +136,14 @@ async def check_and_delete_expired_messages(context: ContextTypes.DEFAULT_TYPE):
         for id_, chat_id, message_id in expired_messages:
             try:
                 await app.bot.delete_message(chat_id=chat_id, message_id=message_id)
-                logging.info(f"Message {message_id} in chat {chat_id} deleted.")
+                logging.info(t("del_message.deletion_success",
+                              message_id=message_id, chat_id=chat_id))
             except Exception as e:
-                logging.error(f"Error deleting message {message_id}: {e}")
+                logging.error(t("del_message.deletion_error",
+                               message_id=message_id, error=e))
 
             # Delete record from database
             await delete_message_record(id_)
 
     except Exception as e:
-        logging.error(f"Error checking expired messages: {e}")
+        logging.error(t("del_message.check_error", error=e))
