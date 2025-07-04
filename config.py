@@ -12,6 +12,10 @@ ALLOWED_GROUPS = list(map(int, os.getenv("ALLOWED_GROUPS", "").split(","))) if o
 # Language
 LANGUAGE = os.getenv("LANGUAGE", "en")
 
+# Translation Configuration
+DEFAULT_TRANSLATE_TO = os.getenv("DEFAULT_TRANSLATE_TO", "en")
+TRANSLATE_FROM = os.getenv("TRANSLATE_FROM", "auto")
+
 # If True, the bot will only work in ALLOWED_GROUPS groups
 # If False, the bot will work in all groups
 RESTRICT_TO_ALLOWED_GROUPS = True

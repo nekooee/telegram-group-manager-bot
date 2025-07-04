@@ -6,6 +6,7 @@ Currently, the bot supports:
 
 * Scheduling automatic deletion of messages with customizable timers.
 * Converting various image formats (like HEIC, AVIF) to JPG, with options to upload as photo or file.
+* Translating messages to different languages.
 * And many more features planned to be added soon!
 
 ---
@@ -64,6 +65,44 @@ The bot supports converting certain image formats specified in the config file.
   ```
 
 The conversion quality is set to 90% by default, balancing image quality and file size.
+
+---
+
+### Message Translation
+
+The bot can translate messages to different languages using the translation module.
+
+**How to use:**
+
+* Reply to the message you want to translate and send:
+
+  ```
+  /translate
+  ```
+
+  This will translate the message to the default language specified in the `config.py` file.
+
+* To translate to a specific language, use the language code:
+
+  ```
+  /translate en
+  /translate fa
+  /translate es
+  ```
+
+  where the language code corresponds to the target language (e.g., `en` for English, `fa` for Persian, `es` for Spanish).
+
+---
+
+## Configuration
+
+You can customize default timers, allowed image formats, default translation language, and other settings in the `config.py` file.
+
+### Translation Settings
+
+* **Default Language**: Set the default target language for translations in the config file.
+* **Custom Translations**: You can add your own translation files in JSON format to the `translations` folder. The bot will automatically load and use these translations.
+* **Translation Files**: All translation files are stored in the `translations` folder and should be in JSON format.
 
 ---
 
@@ -155,7 +194,7 @@ Then, to run the bot and keep it running even after closing the terminal, you ca
 
    This will keep the bot running after you close the terminal. Logs will be written to `bot.log`.
 
-3. To check if it’s running:
+3. To check if it's running:
 
    ```bash
    ps aux | grep group_manager_bot.py
@@ -173,13 +212,7 @@ Then, to run the bot and keep it running even after closing the terminal, you ca
 
 1. Add the bot to your Telegram group or channel.
 2. Grant the bot admin rights to enable message deletion and media handling.
-3. Use the commands above to manage your messages and images.
-
----
-
-## Configuration
-
-You can customize default timers, allowed image formats, and other settings in the `config.py` file.
+3. Use the commands above to manage your messages, images, and translations.
 
 ---
 
@@ -188,6 +221,7 @@ You can customize default timers, allowed image formats, and other settings in t
 * Adding more moderation tools.
 * Support for more media formats.
 * Custom commands and automations.
+* Enhanced translation features.
 
 Stay tuned!
 

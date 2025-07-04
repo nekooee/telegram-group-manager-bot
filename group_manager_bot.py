@@ -6,6 +6,7 @@ from config import BOT_TOKEN, DELETE_AFTER_HOURS, ADMIN_USER_ID, ALLOWED_GROUPS,
 from database.db_manager import init_db
 from handlers.del_message import DelMessageHandler, check_and_delete_expired_messages
 from handlers.to_jpg import ToJpgHandler
+from handlers.translate import TranslateHandler
 from translations import init_translator, t
 
 # Configure logging
@@ -27,6 +28,7 @@ class TelegramBot:
         self.handlers = [
             DelMessageHandler(),
             ToJpgHandler(),
+            TranslateHandler(),
             # Add other handlers here
         ]
 
