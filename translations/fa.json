@@ -65,5 +65,17 @@
     "heic_not_supported": "فرمت HEIC پشتیبانی نمی‌شود. لطفاً pillow-heif را نصب کنید.",
     "image_conversion_error": "خطا در تبدیل تصویر: {error}",
     "temp_cleanup_error": "خطا در حذف پوشه موقت {temp_dir}: {error}"
+  },
+   "translate": {
+    "handler_name": "ترجمه متن",
+    "reply_required": "لطفاً این دستور را در پاسخ به یک پیام حاوی متن ارسال کنید.",
+    "no_text": "پیام انتخاب شده حاوی متن قابل ترجمه نیست.",
+    "invalid_language": "❌ زبان نامعتبر: {language}\n💡 مثال کدهای زبان: {examples}",
+    "same_language": "❌ زبان مبدأ و مقصد یکسان هستند ({language}).",
+    "translating": "🔄 در حال ترجمه...",
+    "detected_language": "🔍 زبان تشخیص داده شده: {language} {confidence}",
+    "translation_info": "🌐 {from_lang} → {to_lang}",
+    "translation_error": "❌ خطا در ترجمه: {error}",
+    "general_error": "❌ خطا: {error}"
   }
 }

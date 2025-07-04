@@ -65,5 +65,17 @@
     "heic_not_supported": "HEIC format is not supported. Please install pillow-heif.",
     "image_conversion_error": "Error converting image: {error}",
     "temp_cleanup_error": "Error deleting temporary folder {temp_dir}: {error}"
+  },
+    "translate": {
+    "handler_name": "Translate Text",
+    "reply_required": "Please send this command in reply to a message containing text.",
+    "no_text": "The selected message does not contain text to translate.",
+    "invalid_language": "❌ Invalid language: {language}\n💡 Example language codes: {examples}",
+    "same_language": "❌ Source and target languages are the same ({language}).",
+    "translating": "🔄 Translating...",
+    "detected_language": "🔍 Detected language: {language} {confidence}",
+    "translation_info": "🌐 {from_lang} → {to_lang}",
+    "translation_error": "❌ Translation error: {error}",
+    "general_error": "❌ Error: {error}"
   }
 }
