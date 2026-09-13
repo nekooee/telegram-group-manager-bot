@@ -16,10 +16,15 @@ LANGUAGE = os.getenv("LANGUAGE", "en")
 DEFAULT_TRANSLATE_TO = os.getenv("DEFAULT_TRANSLATE_TO", "en")
 TRANSLATE_FROM = os.getenv("TRANSLATE_FROM", "auto")
 
+# Timezone Configuration
+TIMEZONE = os.getenv("TIMEZONE", "Asia/Tehran")
+
 # If True, the bot will only work in ALLOWED_GROUPS groups
 # If False, the bot will work in all groups
 RESTRICT_TO_ALLOWED_GROUPS = True
 
 # Handler Configurations
-DELETE_AFTER_HOURS = 24 #24H
+DELETE_AFTER_HOURS = 24  # default delay when no UI selection applies
+MAX_MESSAGE_AGE_HOURS = 48  # Telegram deleteMessage limit (from message post time)
+EPHEMERAL_MESSAGE_TTL_SECONDS = 10  # auto-delete ephemeral UI; set 0 to keep messages
 SUPPORTED_IMAGE_FORMATS = ['.png', '.gif', '.bmp', '.webp', '.tiff', '.heic', '.heif', '.avif', '.jpg']

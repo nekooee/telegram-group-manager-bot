@@ -37,14 +37,39 @@
     "keyboard_interrupt": "Ctrl+C دریافت شد",
     "exiting": "در حال خروج از برنامه"
   },
-  "del_message": {
+    "del_message": {
     "handler_name": "حذف پیام بعد از زمان مشخص",
     "reply_required": "لطفاً این دستور را در پاسخ به یک پیام ارسال کنید.",
     "scheduled_confirmation": "✅ پیام برای حذف در {time_text} برنامه‌ریزی شد.",
+    "too_old": "❌ این پیام بیش از ۴۸ ساعت سن دارد و تلگرام اجازه حذف آن را نمی‌دهد.",
+    "capped_warning": "⚠️ زمان درخواستی بیش از حد مجاز بود. تلگرام فقط تا {max_time} بعد از ارسال پیام اجازه حذف می‌دهد؛ زمان حذف روی همین حد تنظیم شد.",
+    "error_too_old_telegram": "پیام خیلی قدیمی است (محدودیت ۴۸ ساعت تلگرام)",
+    "error_not_found": "پیام پیدا نشد (شاید قبلاً حذف شده)",
+    "ui": {
+      "choose_unit": "⏱ زمان حذف را انتخاب کنید:",
+      "already_scheduled": "⏱ این پیام قبلا برای حذف زمان‌بندی شده ({time_text}). زمان جدید انتخاب کنید یا زمان‌بندی را لغو کنید.",
+      "unschedule": "🚫 لغو زمان‌بندی حذف",
+      "unscheduled": "✅ زمان‌بندی حذف این پیام لغو شد؛ پیام حذف نمی‌شود.",
+      "not_scheduled": "این پیام در لیست حذف نبود.",
+      "choose_minutes": "⏱ چند دقیقه بعد حذف شود؟",
+      "choose_hours": "⏱ چند ساعت بعد حذف شود؟",
+      "minutes": "دقیقه",
+      "hours": "ساعت",
+      "minute_label": "{value} دقیقه",
+      "hour_label": "{value} ساعت",
+      "custom": "عدد دلخواه",
+      "back": "◀️ بازگشت",
+      "cancel": "❌ لغو",
+      "cancelled": "❌ عملیات لغو شد. برای پیام دیگر دوباره /del را روی همان پیام بزنید.",
+      "type_number": "عدد را تایپ کنید (فقط عدد):",
+      "invalid_number": "عدد نامعتبر است.",
+      "session_expired": "این گفتگو منقضی شده. دوباره /del را روی پیام ارسال کنید."
+    },
     "time_format": {
       "days": "{days} روز",
       "days_hours": "{days} روز و {hours} ساعت",
       "hours": "{hours} ساعت",
+      "hours_minutes": "{hours} ساعت و {minutes} دقیقه",
       "minutes": "{minutes} دقیقه",
       "seconds": "{seconds} ثانیه"
     },

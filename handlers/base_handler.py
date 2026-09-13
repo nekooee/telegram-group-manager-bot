@@ -1,6 +1,9 @@
 from abc import ABC, abstractmethod
+
 from telegram import Update
 from telegram.ext import ContextTypes
+
+from utils.ephemeral import reply_ephemeral_or_text
 
 
 class BaseHandler(ABC):
@@ -24,12 +27,5 @@ class BaseHandler(ABC):
         return True
 
     async def send_error_message(self, update: Update, message: str):
-        """Send error message"""
-        error_msg = await update.message.reply_text(f"❗ {message}")
-        # Delete error message after 10 seconds
-        import asyncio
-        await asyncio.sleep(10)
-        try:
-            await error_msg.delete()
-        except:
-            pass
+        """Send error message (ephemeral in groups)."""
+        await reply_ephemeral_or_text(update, f"❗ {message}")

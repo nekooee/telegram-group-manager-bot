@@ -1,13 +1,27 @@
 import asyncio
 import logging
 import signal
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters
+from telegram import BotCommand
+from telegram.ext import (
+    ApplicationBuilder,
+    CallbackQueryHandler,
+    CommandHandler,
+    MessageHandler,
+    filters,
+)
 from config import BOT_TOKEN, DELETE_AFTER_HOURS, ADMIN_USER_ID, ALLOWED_GROUPS, RESTRICT_TO_ALLOWED_GROUPS, LANGUAGE
 from database.db_manager import init_db
-from handlers.del_message import DelMessageHandler, check_and_delete_expired_messages
+from handlers.del_message import (
+    DelMessageHandler,
+    check_and_delete_expired_messages,
+    del_flow_callback,
+    del_flow_text_handler,
+)
 from handlers.to_jpg import ToJpgHandler
 from handlers.translate import TranslateHandler
+from handlers.admin_report import admin_report_cmd, admin_test_msg_cmd, admin_cleanup_cmd, generate_admin_report
 from translations import init_translator, t
+from utils.ephemeral import reply_ephemeral_or_text
 
 # Configure logging
 logging.basicConfig(
@@ -52,15 +66,17 @@ class TelegramBot:
         # In private chat, only admin is allowed
         if chat_id > 0:
             if user_id != ADMIN_USER_ID:
-                await update.message.reply_text(
-                    t("permissions.not_authorized_user")
+                await reply_ephemeral_or_text(
+                    update,
+                    t("permissions.not_authorized_user"),
                 )
                 return False
 
         # In groups, check the allowed groups list
         elif not self._is_group_allowed(chat_id):
-            await update.message.reply_text(
-                t("permissions.not_authorized_group", chat_id=chat_id)
+            await reply_ephemeral_or_text(
+                update,
+                t("permissions.not_authorized_group", chat_id=chat_id),
             )
             logging.warning(f"Unauthorized request from group {chat_id} by user {user_id}")
             return False
@@ -79,6 +95,11 @@ class TelegramBot:
         # Add command to show group ID
         self.app.add_handler(CommandHandler("groupid", self._groupid_command))
 
+        # Add admin commands
+        self.app.add_handler(CommandHandler("report", admin_report_cmd))
+        self.app.add_handler(CommandHandler("test_msg", admin_test_msg_cmd))
+        self.app.add_handler(CommandHandler("cleanup", admin_cleanup_cmd))
+
         # Add handlers
         for handler in self.handlers:
             command_handler = CommandHandler(
@@ -88,8 +109,28 @@ class TelegramBot:
             self.app.add_handler(command_handler)
             logging.info(f"Handler '{handler.name}' registered for /{handler.get_command_name()}")
 
+        self.app.add_handler(CallbackQueryHandler(del_flow_callback, pattern=r"^del:"))
+        self.app.add_handler(
+            MessageHandler(
+                filters.TEXT & ~filters.COMMAND,
+                del_flow_text_handler,
+            )
+        )
+
         # Setup periodic jobs
         self._setup_jobs()
+
+    async def _setup_ephemeral_commands(self):
+        """Register ephemeral bot commands (Bot API 10.2)."""
+        commands = [
+            BotCommand(
+                handler.get_command_name(),
+                handler.name,
+                api_kwargs={"is_ephemeral": True},
+            )
+            for handler in self.handlers
+        ]
+        await self.app.bot.set_my_commands(commands)
 
     def _wrap_handler_with_permission_check(self, original_handler):
         """Wrap handlers with permission check"""
@@ -176,6 +217,7 @@ class TelegramBot:
 
         # Initialize the app
         await self.app.initialize()
+        await self._setup_ephemeral_commands()
         await self.app.start()
         await self.app.updater.start_polling()
 

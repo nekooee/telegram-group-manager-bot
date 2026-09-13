@@ -70,12 +70,6 @@ class ToJpgHandler(BaseHandler):
         if not await self.validate_input(update):
             return
 
-        # Delete command message
-        try:
-            await update.message.delete()
-        except:
-            pass
-
         # Check for photo parameter in command text
         command_text = update.message.text or ""
         send_as_photo = "photo" in command_text.lower()

@@ -4,6 +4,7 @@ from telegram import Update
 from telegram.ext import ContextTypes
 from config import DEFAULT_TRANSLATE_TO, TRANSLATE_FROM
 from translations import t
+from utils.ephemeral import reply_ephemeral_or_text
 
 
 class TranslateHandler:
@@ -40,7 +41,7 @@ class TranslateHandler:
         try:
             # Check if command is a reply to a message
             if not update.message.reply_to_message:
-                await update.message.reply_text(t("translate.reply_required"))
+                await reply_ephemeral_or_text(update, t("translate.reply_required"))
                 return
 
             # Get the text to translate
@@ -53,7 +54,7 @@ class TranslateHandler:
             elif target_message.caption:
                 text_to_translate = target_message.caption
             else:
-                await update.message.reply_text(t("translate.no_text"))
+                await reply_ephemeral_or_text(update, t("translate.no_text"))
                 return
 
             # Get target language from command arguments
@@ -65,10 +66,13 @@ class TranslateHandler:
                     target_language = lang_code
                 else:
                     available_langs = ", ".join(list(LANGUAGES.keys())[:20])  # Show first 20 languages
-                    await update.message.reply_text(
-                        t("translate.invalid_language",
-                          language=provided_lang,
-                          examples=available_langs)
+                    await reply_ephemeral_or_text(
+                        update,
+                        t(
+                            "translate.invalid_language",
+                            language=provided_lang,
+                            examples=available_langs,
+                        ),
                     )
                     return
 
